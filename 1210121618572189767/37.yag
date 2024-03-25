@@ -213,8 +213,8 @@
 	{{$hex := sdict "R" 0xFF0000 "G" 0x00FF00 "B" 0x0000FF "Y" 0xFFFF00}}{{$token := .token}}
 	{{$menu := sdict "data" .data "user" (index .data.turns 0)}}{{$_ := execTemplate "CMenu" $menu}}{{$data := .data}}
 	{{$cards := (.data.users.Get $menu.user).cards}}
-	{{$uno := cslice}}{{if le (len $cards) 2}}{{$uno := cslice (cbutton "label" "Uno" "custom_id" "uno_uno" "style" "Success")}}{{end}}
-	{{$_ := execTemplate "sendResponse" (sdict "T" $token "Emb" (cembed "color" ($hex.Get $data.disc.col) "description" (printf "The current card is: \n# <:e:%s>\n\nIt's <@%s> turn." ($data.emojis.Get (index $data.disc.cards 0)) (index $data.turns 0))) "Com" (cslice (cbutton "label" "Hand" "custom_id" "uno_hand" "style" "Success") (cbutton "label" "Play" "custom_id" "uno_play" "style" "Success" "disabled" (not $menu.pickup)) (cbutton "label" "Pickup" "custom_id" "uno_pickup" "style" "Success" "disabled" $menu.pickup) (cbutton "label" "Callout" "custom_id" "uno_callout" "style" "Danger") (cbutton "label" "Help" "custom_id" "uno_help" "style" "Primary")).AppendSlice $uno)}}
+	{{$uno := cslice}}{{if le (len $cards) 2}}{{$uno = $uno.Append (cbutton "label" "Uno" "custom_id" "uno_uno" "style" "Success")}}{{end}}
+	{{$_ := execTemplate "sendResponse" (sdict "T" $token "Emb" (cembed "color" ($hex.Get $data.disc.col) "description" (printf "The current card is: \n# <:e:%s>\n\nIt's <@%s> turn." ($data.emojis.Get (index $data.disc.cards 0)) (index $data.turns 0))) "Com" ((cslice (cbutton "label" "Hand" "custom_id" "uno_hand" "style" "Success") (cbutton "label" "Play" "custom_id" "uno_play" "style" "Success" "disabled" (not $menu.pickup)) (cbutton "label" "Pickup" "custom_id" "uno_pickup" "style" "Success" "disabled" $menu.pickup) (cbutton "label" "Callout" "custom_id" "uno_callout" "style" "Danger") (cbutton "label" "Help" "custom_id" "uno_help" "style" "Primary"))).AppendSlice $uno)}}
 {{end}}
 
 {{define "playButt"}}
