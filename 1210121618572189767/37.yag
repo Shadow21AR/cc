@@ -154,6 +154,7 @@
 		{{$mID := execTemplate "genResponse" (sdict "token" .Interaction.Token "data" $data)}}
 		{{$data.Set "mID" $mID}}
 	{{end}}
+	{{$uCards := ($data.users.Get (str .User.ID)).cards}}
 	{{if le (len $uCards) 0}}
 		{{$winner := .User}}
 		{{$score := or ($data.users.Get (str .User.ID)).score 0}}
