@@ -84,7 +84,8 @@
 	{{end}}
 	{{$uCards := ($data.users.Get (str .User.ID)).cards}}
 	{{if le (len $uCards) $data.setup.minCard}}
-		{{$data.setup.Set "unoCall" ($data.setup.unoCall.Append .User.ID)}}
+		{{$list := $data.setup.unoCall}}
+		{{$data.setup.Set "unoCall" ($list.Append .User.ID)}}
 		{{template "sendResponse" (sdict "T" .Interaction.Token "Con" "👍🏻" "Eph" true)}}
 	{{end}}
 {{else if eq .StrippedID "callout"}}
