@@ -88,6 +88,9 @@
 		{{template "sendResponse" (sdict "T" .Interaction.Token "Con" "👍🏻" "Eph" true)}}
 	{{end}}
 {{else if eq .StrippedID "callout"}}
+	{{if ne (index $data.turns 0) (str .User.ID)}}
+		{{template "sendResponse" (sdict "T" .Interaction.Token "Con" "it's not your turn." "Eph" true)}}{{return}}
+	{{end}}
 	{{template "playCall" (sdict "T" .Interaction.Token "data" $data "User" .User)}}
 {{else if eq .StrippedID "hand"}}
 	{{if not (in $data.turns (str .User.ID))}}
@@ -204,6 +207,9 @@
 		{{$data.disc.Set "col" ((sdict "🔴" "R" "🟢" "G" "🔵" "B" "🟡" "Y").Get (index .Values 0))}}
 		{{template "genResponse" (sdict "token" .Interaction.Token "data" $data)}}
 	{{else if eq (index $args 2) "call"}}
+		{{if ne (index $data.turns 0) (str .User.ID)}}
+			{{template "sendResponse" (sdict "T" .Interaction.Token "Con" "it's not your turn." "Eph" true)}}{{return}}
+		{{end}}
 		{{$target := (index .Values 0 | str)}}
 		{{if $data.users.HasKey $target}}
 			{{template "sendResponse" (sdict "T" .Interaction.Token "Con" (printf "%s called out <@%s> for not calling UNO!" .User.Mention $target))}}
