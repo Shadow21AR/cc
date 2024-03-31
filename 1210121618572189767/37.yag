@@ -229,7 +229,7 @@
 		{{end}}
 	{{end}}
 	{{$uCards := ($data.users.Get (str .User.ID)).cards}}
-	{{if ge (len $uCards) 0}}
+	{{if le (len $uCards) 0}}
 		{{$winner := .User}}
 		{{$score := or ($data.users.Get (str .User.ID)).score 0}}
 		{{range $data.users}}
@@ -252,7 +252,7 @@
 				{{dbDel .Channel.ID "uno"}}{{return}}
 			{{- end}}
 		{{end}}
-		{{template "sendResponse" (sdict "T" .Interaction.Token "Con" (printf "<@%s> won this round and earned `%d` points.\nStarting new round. . ." .User.ID $score))}}
+		{{template "sendResponse" (sdict "T" .Interaction.Token "Con" (printf "<@%d> won this round and earned `%d` points.\nStarting new round. . ." .User.ID $score))}}
 		{{sleep 1}}
 		{{$deck := cslice}}{{/*Should restart the game ig*/}}
 		{{range $s := (cslice "0" "1" "2" "3" "4" "5" "6" "7" "8" "9" "REVERSE" "SKIP" "PLUS2")}}
