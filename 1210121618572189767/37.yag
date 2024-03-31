@@ -60,7 +60,7 @@
 		{{range seq 1 $data.setup.deckSize}}{{$deck = $deck.AppendSlice $deck}}{{end}}
 		{{$deck = shuffle $deck}}
 		{{range $k, $v := $data.users}}
-			{{$v.Set "cards" (slice $deck 0 7)}}
+			{{$v.Set "cards" (slice $deck 0 2)}}
 			{{$deck = slice $deck 7}}
 		{{end}}
 		{{$turns := cslice}}{{range $k, $v := $data.users}}{{$turns = $turns.Append $k}}{{end}}
