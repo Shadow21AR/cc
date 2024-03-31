@@ -1,2 +1,4 @@
 # cc
- yagpdb or something cs
+ yagpdb or something CCs
+
+## WIP
