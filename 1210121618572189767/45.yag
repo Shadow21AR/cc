@@ -1,1 +1,1 @@
-{{sendResponse .Interaction.Token (complexMessage "file" (json . true))}}
+{{sendMessage nil (complexMessage "file" (json . true))}}
