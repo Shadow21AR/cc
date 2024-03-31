@@ -23,6 +23,7 @@
 		{{$_ := execTemplate "sendResponse" (sdict "T" .Interaction.Token "Con" "You left the game" "Eph" true)}}
 		{{if eq (len $data.users) 0}}
 			{{$_ := execTemplate "sendResponse" (sdict "T" .Interaction.Token "Con" "All players left, closing the game")}}
+			{{$_ := execTemplate "disable" (sdict "msg" .Message "mID" .Message.ID)}}
 			{{dbDel .Channel.ID "uno"}}{{return}}
 		{{end}}
 		{{if eq .User.ID $data.owner}}
