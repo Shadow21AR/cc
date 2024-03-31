@@ -166,9 +166,6 @@
 			{{$opts := cslice}}{{range (cslice "🔴" "🟢" "🔵" "🟡")}}{{$opts = $opts.Append (sdict "label" . "value" .)}}{{end}}
 			{{updateMessage (complexMessageEdit "embed" (cembed "description" (print .User.Mention " | Select the new color")) "components" (cmenu "custom_id" (print "uno_pick_" .User.ID "_col") "type" "text" "placeholder" "pick a card" "options" $opts))}}
 			{{$nUser := index $data.turns 1}}
-			{{if gt (len ($data.turns)) 2}}
-				{{$data.Set "turns" ((slice $data.turns 2).Append (slice $data.turns 0 2))}}
-			{{end}}
 			{{$nUserCards := ($data.users.Get $nUser).cards}}
 			{{if le (len $data.deck) 4}}{{$data.Set "deck" ($data.deck.AppendSlice (slice $data.disc.cards 1 | shuffle))}}{{$data.disc.Set "cards" (cslice (index $data.disc.cards 0))}}{{end}}
 			{{$nUserCards =$nUserCards.AppendSlice (slice $data.deck 0 4)}}{{($data.users.Get $nUser).Set "cards" $nUserCards}}{{$data.Set "deck" (slice $data.deck 4)}}
@@ -206,6 +203,7 @@
 		{{end}}
 	{{else if eq (index $args 2) "col"}}
 		{{$data.disc.Set "col" ((sdict "🔴" "R" "🟢" "G" "🔵" "B" "🟡" "Y").Get (index .Values 0))}}
+		{{ $data.Set "turns" ((slice $data.turns 1).Append (index $data.turns 0)) }}
 		{{template "genResponse" (sdict "token" .Interaction.Token "data" $data)}}
 	{{else if eq (index $args 2) "call"}}
 		{{if ne (index $data.turns 0) (str .User.ID)}}
