@@ -247,7 +247,7 @@
 			{{.Set "cards" cslice}}
 		{{end}}
 		{{($data.users.Get (str .User.ID)).Set "score" $score}}
-		{{range $k, $v := $data.users}}{{/*TOo lazy to test, works in my mind xD*/}}
+		{{range $k, $v := $data.users}}{{/*Too lazy to test, works in my mind xD*/}}
 			{{- if ge $v.score 500}}
 				{{sendMessageRetID nil (print "<@" $k "> WON!")}}
 				{{return}}
@@ -269,7 +269,7 @@
 		{{end}}
 		{{$turns := cslice}}{{range $k, $v := $data.users}}{{$turns = $turns.Append $k}}{{end}}
 		{{$deck = slice $deck 1}}
-		{{template "disable" (sdict "msg" .Message "mID" .Message.ID)}}
+		{{template "disable" (sdict "msg" $msg "mID" $data.mID)}}
 		{{$data.Set "unoCall" cslice}}
 		{{$data.Set "deck" $deck}}{{$data.Set "turns" $turns}}
 		{{$discCard := sdict "in" (index $deck 0)}}{{template "getCard" $discCard}}
