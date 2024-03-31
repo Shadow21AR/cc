@@ -246,8 +246,8 @@
 			{{.Set "cards" cslice}}
 		{{end}}
 		{{($data.users.Get (str .User.ID)).Set "score" $score}}
-		{{range $data.users}}
-			{{- if ge .score 500}}
+		{{range $k, $v := $data.users}}
+			{{- if ge $v.score 500}}
 				{{sendMessageRetID nil (print "<@" $k "> WON!")}}
 				{{dbDel .Channel.ID "uno"}}{{return}}
 			{{- end}}
