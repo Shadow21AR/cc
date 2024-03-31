@@ -107,6 +107,7 @@
 			{{$desc := ""}}
 			{{range $k, $v := $data.users}}{{$desc = printf "%sEveryone left the game...\n<@%s> won the game." $desc $k}}{{end}}
 			{{$_ := execTemplate "sendResponse" (sdict "T" .Interaction.Token "Con" $desc)}}
+			{{$_ := execTemplate "disable" (sdict "msg" .Message "mID" .Message.ID)}}
 			{{dbDel .Channel.ID "uno"}}{{return}}
 		{{end}}
 	{{else}}
