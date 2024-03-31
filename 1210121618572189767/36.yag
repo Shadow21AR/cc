@@ -4,7 +4,7 @@
 
 {{if .CmdArgs}}
     {{if eq (index .CmdArgs 0 | lower) "reset"}}
-        {{if hasRoleID $modRole}}{{dbDel .Channel.ID "uno"}}{{end}}
+        {{if hasRoleID $modRole}}{{dbDel .Channel.ID "uno"}}{{addReactions "👍🏻"}}{{end}}
     {{end}}{{return}}
 {{end}}
 {{if $data := (dbGet .Channel.ID "uno").Value}}
