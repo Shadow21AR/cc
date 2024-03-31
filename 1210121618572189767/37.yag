@@ -140,6 +140,7 @@
 	{{if ne (index $args 1) (str .User.ID)}}
 		{{template "sendResponse" (sdict "T" .Interaction.Token "Con" "it's not your card." "Eph" true)}}{{return}}
 	{{end}}
+	{{$msg := getMessage nil $data.mID}}
 	{{if eq (index $args 2) "cards"}}
 		{{if ne (index $data.turns 0) (str .User.ID)}}{{template "sendResponse" (sdict "T" .Interaction.Token "Con" "it's not your turn." "Eph" true)}}{{return}}{{end}}
 		{{$picked := index .Values 0}}
@@ -155,7 +156,6 @@
 		{{range ($data.users.Get (str .User.ID)).cards}}{{- if eq $check .}}{{- $check = "8008"}}{{- else}}{{- $uCards = $uCards.Append .}}{{- end}}{{end}}
 		{{($data.users.Get (str .User.ID)).Set "cards" $uCards}}
 		{{$newDisc := (cslice $card.in).AppendSlice $data.disc.cards}}{{$data.disc.Set "cards" $newDisc}}
-		{{$msg := getMessage nil $data.mID}}
 		{{if eq "WILD" $card.name}}
 			{{if ne (index $data.turns 0) (str .User.ID)}}{{template "sendResponse" (sdict "T" .Interaction.Token "Con" "it's not your turn." "Eph" true)}}{{return}}{{end}}
 			{{$opts := cslice}}{{range (cslice "🔴" "🟢" "🔵" "🟡")}}{{$opts = $opts.Append (sdict "label" . "value" .)}}{{end}}
