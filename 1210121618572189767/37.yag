@@ -229,13 +229,13 @@
 		{{end}}
 	{{end}}
 	{{$uCards := ($data.users.Get (str .User.ID)).cards}}
-	{{if le (len $uCards) 0}}
+	{{if ge (len $uCards) 0}}
 		{{$winner := .User}}
 		{{$score := or ($data.users.Get (str .User.ID)).score 0}}
 		{{range $k, $v := $data.users}}
 			{{- if ne $k "cards"}}{{continue}}{{end}}
 			{{- range $v}}
-				{{- $face := slice . 1}}
+				{{- $face := slice . 1}}Face : {{$face}}
 				{{- if eq $face "0" "1" "2" "3" "4" "5" "6" "7" "8" "9"}}
 					{{- $score = add 3 $score}}
 				{{- else if eq $face "REVERSE" "SKIP" "PLUS2"}}
