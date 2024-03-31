@@ -17,10 +17,6 @@
 {{else if eq .StrippedID "leave"}}
 	{{if $data.users.HasKey (str .User.ID)}}
 		{{$data.users.Del (str .User.ID)}}
-		{{$m := ""}}{{range $k, $v := $data.users}}{{$m = printf "%s<@%s>\n" $m $k}}{{end}}
-		{{$embed.Set "fields" (cslice (sdict "name" "Player(s) joined" "value" (or $m "NIL")))}}
-		{{editMessage nil .Message.ID (complexMessageEdit "embed" $embed)}}
-		{{$_ := execTemplate "sendResponse" (sdict "T" .Interaction.Token "Con" "You left the game" "Eph" true)}}
 		{{if eq (len $data.users) 0}}
 			{{$_ := execTemplate "sendResponse" (sdict "T" .Interaction.Token "Con" "All players left, closing the game")}}
 			{{$_ := execTemplate "disable" (sdict "msg" .Message "mID" .Message.ID)}}
@@ -32,6 +28,10 @@
 			{{$_ := execTemplate "sendResponse" (sdict "T" .Interaction.Token "Con" (printf "<@%s> left the game, <@%s> became the owner of the game!" $data.owner $newOwner))}}
 			{{$data.Set "owner" $newOwner}}
 		{{end}}
+		{{$m := ""}}{{range $k, $v := $data.users}}{{$m = printf "%s<@%s>\n" $m $k}}{{end}}
+		{{$embed.Set "fields" (cslice (sdict "name" "Player(s) joined" "value" (or $m "NIL")))}}
+		{{editMessage nil .Message.ID (complexMessageEdit "embed" $embed)}}
+		{{$_ := execTemplate "sendResponse" (sdict "T" .Interaction.Token "Con" "You left the game" "Eph" true)}}
 	{{else}}
 		{{$_ := execTemplate "sendResponse" (sdict "T" .Interaction.Token "Con" "You are not in the game" "Eph" true)}}
 	{{end}}
