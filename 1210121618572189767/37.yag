@@ -173,7 +173,6 @@
 			{{if le (len $data.deck) 4}}{{$data.Set "deck" ($data.deck.AppendSlice (slice $data.disc.cards 1 | shuffle))}}{{$data.disc.Set "cards" (cslice (index $data.disc.cards 0))}}{{end}}
 			{{$nUserCards =$nUserCards.AppendSlice (slice $data.deck 0 4)}}{{($data.users.Get $nUser).Set "cards" $nUserCards}}{{$data.Set "deck" (slice $data.deck 4)}}
 			{{template "sendResponse" (sdict "T" .Interaction.Token "Emb" (cembed "description" (print "Added 4 cards to <@" $nUser ">'s hand.")))}}
-			{{template "genResponse" (sdict "token" .Interaction.Token "data" $data)}}
 			{{template "disable" (sdict "msg" $msg "mID" $data.mID)}}
 		{{else if reFind `REVERSE` $card.name}}
 			{{if ne (index $data.turns 0) (str .User.ID)}}{{template "sendResponse" (sdict "T" .Interaction.Token "Con" "it's not your turn." "Eph" true)}}{{return}}{{end}}
