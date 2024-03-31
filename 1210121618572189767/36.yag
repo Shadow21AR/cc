@@ -17,4 +17,4 @@
         (cbutton "label" "Leave" "custom_id" "uno_leave" "style" "Danger")
         (cbutton "label" "Setup" "custom_id" "uno_setup" "style" "Primary")
         (cbutton "label" "Start" "custom_id" "uno_start" "style" "Primary")))}}
-{{dbSetExpire .Channel.ID "uno" (sdict "emojis" $emojis "owner" .User.ID "idle" true ""chanID" .Channel.ID "mID" $mID "unoCall" (cslice) "setup" (sdict "minCard" 2 "deckSize" 1) "users" (sdict (str .User.ID) (sdict "cards" cslice))) 3600}}
+{{dbSetExpire .Channel.ID "uno" (sdict "emojis" $emojis "owner" .User.ID "idle" true "chanID" .Channel.ID "mID" $mID "unoCall" (cslice) "setup" (sdict "minCard" 2 "deckSize" 1) "users" (sdict (str .User.ID) (sdict "cards" cslice))) 3600}}
