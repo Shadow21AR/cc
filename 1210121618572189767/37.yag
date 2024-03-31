@@ -71,7 +71,7 @@
 		{{$myCol := ""}}{{if eq $discCard.col "A"}}{{$myCol = (index (shuffle (cslice "R" "G" "B" "Y")) 0)}}{{end}}
 		{{$data.Set "disc" (sdict "cards" (cslice (index $deck 0)) "col" (or $myCol $discCard.col ))}}
 		{{$out := sdict "token" .Interaction.Token "data" $data "RID" true}}{{template "genResponse" $out}}
-		{{$data.Set "mID" $out.mID}}
+		{{$data.Set "mID" $out.data.mID}}
 		{{sendMessage nil (complexMessage "content" "start Data" "file" (json $data true) )}}
 	{{end}}
 {{else if eq .StrippedID "play"}}
@@ -156,11 +156,12 @@
 		{{range ($data.users.Get (str .User.ID)).cards}}{{- if eq $check .}}{{- $check = "8008"}}{{- else}}{{- $uCards = $uCards.Append .}}{{- end}}{{end}}
 		{{($data.users.Get (str .User.ID)).Set "cards" $uCards}}
 		{{$newDisc := (cslice $card.in).AppendSlice $data.disc.cards}}{{$data.disc.Set "cards" $newDisc}}
+		{{$msg := getMessage nil $data.mID}}
 		{{if eq "WILD" $card.name}}
 			{{if ne (index $data.turns 0) (str .User.ID)}}{{template "sendResponse" (sdict "T" .Interaction.Token "Con" "it's not your turn." "Eph" true)}}{{return}}{{end}}
 			{{$opts := cslice}}{{range (cslice "🔴" "🟢" "🔵" "🟡")}}{{$opts = $opts.Append (sdict "label" . "value" .)}}{{end}}
 			{{updateMessage (complexMessageEdit "embed" (cembed "description" (print .User.Mention " | Select the new color")) "components" (cmenu "custom_id" (print "uno_pick_" .User.ID "_col") "type" "text" "placeholder" "pick a card" "options" $opts))}}
-			{{template "disable" (sdict "msg" .Message "mID" .Message.ID)}}
+			{{template "disable" (sdict "msg" $msg "mID" $data.mID)}}
 		{{else if eq "WILD4" $card.name}}
 			{{if ne (index $data.turns 0) (str .User.ID)}}{{template "sendResponse" (sdict "T" .Interaction.Token "Con" "it's not your turn." "Eph" true)}}{{return}}{{end}}
 			{{$opts := cslice}}{{range (cslice "🔴" "🟢" "🔵" "🟡")}}{{$opts = $opts.Append (sdict "label" . "value" .)}}{{end}}
@@ -174,12 +175,12 @@
 			{{$nUserCards =$nUserCards.AppendSlice (slice $data.deck 0 4)}}{{($data.users.Get $nUser).Set "cards" $nUserCards}}{{$data.Set "deck" (slice $data.deck 4)}}
 			{{template "sendResponse" (sdict "T" .Interaction.Token "Emb" (cembed "description" (print "Added 4 cards to <@" $nUser ">'s hand.")))}}
 			{{template "genResponse" (sdict "token" .Interaction.Token "data" $data)}}
-			{{template "disable" (sdict "msg" .Message "mID" .Message.ID)}}
+			{{template "disable" (sdict "msg" $msg "mID" $data.mID)}}
 		{{else if reFind `REVERSE` $card.name}}
 			{{if ne (index $data.turns 0) (str .User.ID)}}{{template "sendResponse" (sdict "T" .Interaction.Token "Con" "it's not your turn." "Eph" true)}}{{return}}{{end}}
 			{{$newTurn := cslice}}{{range $data.turns}}{{- $newTurn = (cslice .).AppendSlice $newTurn}}{{end}}{{$data.Set "turns" $newTurn}}
 			{{template "sendResponse" (sdict "T" .Interaction.Token "Con" "The direction of play has been reversed!")}}
-			{{template "disable" (sdict "msg" .Message "mID" .Message.ID)}}
+			{{template "disable" (sdict "msg" $msg "mID" $data.mID)}}
 			{{template "genResponse" (sdict "token" .Interaction.Token "data" $data)}}
 		{{else if reFind `SKIP` $card.name}}
 			{{if ne (index $data.turns 0) (str .User.ID)}}{{template "sendResponse" (sdict "T" .Interaction.Token "Con" "it's not your turn." "Eph" true)}}{{return}}{{end}}
@@ -187,7 +188,7 @@
 			{{if gt (len ($data.turns)) 2}}
 				{{$data.Set "turns" ((slice $data.turns 2).Append (slice $data.turns 0 2))}}
 			{{end}}
-			{{template "disable" (sdict "msg" .Message "mID" .Message.ID)}}
+			{{template "disable" (sdict "msg" $msg "mID" $data.mID)}}
 			{{template "genResponse" (sdict "token" .Interaction.Token "data" $data)}}
 		{{else if reFind `PLUS2` $card.name}}
 			{{if ne (index $data.turns 0) (str .User.ID)}}{{template "sendResponse" (sdict "T" .Interaction.Token "Con" "it's not your turn." "Eph" true)}}{{return}}{{end}}
@@ -198,12 +199,12 @@
 			{{if gt (len ($data.turns)) 2}}
 				{{$data.Set "turns" ((slice $data.turns 2).Append (slice $data.turns 0 2))}}
 			{{end}}
-			{{template "disable" (sdict "msg" .Message "mID" .Message.ID)}}
+			{{template "disable" (sdict "msg" $msg "mID" $data.mID)}}
 			{{template "genResponse" (sdict "token" .Interaction.Token "data" $data)}}
 		{{else}}
 			{{ $data.Set "turns" ((slice $data.turns 1).Append (index $data.turns 0)) }}
 			{{template "genResponse" (sdict "token" .Interaction.Token "data" $data)}}
-			{{template "disable" (sdict "msg" .Message "mID" .Message.ID)}}
+			{{template "disable" (sdict "msg" $msg "mID" $data.mID)}}
 		{{end}}
 	{{else if eq (index $args 2) "col"}}
 		{{$data.disc.Set "col" ((sdict "🔴" "R" "🟢" "G" "🔵" "B" "🟡" "Y").Get (index .Values 0))}}
@@ -269,6 +270,7 @@
 		{{$turns := cslice}}{{range $k, $v := $data.users}}{{$turns = $turns.Append $k}}{{end}}
 		{{$deck = slice $deck 1}}
 		{{template "disable" (sdict "msg" .Message "mID" .Message.ID)}}
+		{{$data.Set "unoCall" cslice}}
 		{{$data.Set "deck" $deck}}{{$data.Set "turns" $turns}}
 		{{$discCard := sdict "in" (index $deck 0)}}{{template "getCard" $discCard}}
 		{{$myCol := ""}}{{if eq $discCard.col "A"}}{{$myCol = (index (shuffle (cslice "R" "G" "B" "Y")) 0)}}{{end}}
