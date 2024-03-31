@@ -159,17 +159,17 @@
 		{{if eq "WILD" $card.name}}
 			{{if ne (index $data.turns 0) (str .User.ID)}}{{template "sendResponse" (sdict "T" .Interaction.Token "Con" "it's not your turn." "Eph" true)}}{{return}}{{end}}
 			{{$opts := cslice}}{{range (cslice "🔴" "🟢" "🔵" "🟡")}}{{$opts = $opts.Append (sdict "label" . "value" .)}}{{end}}
-			{{updateMessage (complexMessageEdit "embed" (cembed "description" (print .User.Mention " | Select the new color")) "components" (cmenu "custom_id" (print "uno_pick_" .User.ID "_col") "type" "text" "placeholder" "pick a card" "options" $opts))}}
+			{{updateMessage (complexMessageEdit "embed" (cembed "color" 0xae27ff "description" (print .User.Mention " | Select the new color")) "components" (cmenu "custom_id" (print "uno_pick_" .User.ID "_col") "type" "text" "placeholder" "pick a card" "options" $opts))}}
 			{{template "disable" (sdict "msg" $msg "mID" $data.mID)}}
 		{{else if eq "WILD4" $card.name}}
 			{{if ne (index $data.turns 0) (str .User.ID)}}{{template "sendResponse" (sdict "T" .Interaction.Token "Con" "it's not your turn." "Eph" true)}}{{return}}{{end}}
 			{{$opts := cslice}}{{range (cslice "🔴" "🟢" "🔵" "🟡")}}{{$opts = $opts.Append (sdict "label" . "value" .)}}{{end}}
-			{{updateMessage (complexMessageEdit "embed" (cembed "description" (print .User.Mention " | Select the new color")) "components" (cmenu "custom_id" (print "uno_pick_" .User.ID "_col") "type" "text" "placeholder" "pick a card" "options" $opts))}}
+			{{updateMessage (complexMessageEdit "embed" (cembed "color" 0xae27ff "description" (print .User.Mention " | Select the new color")) "components" (cmenu "custom_id" (print "uno_pick_" .User.ID "_col") "type" "text" "placeholder" "pick a card" "options" $opts))}}
 			{{$nUser := index $data.turns 1}}
 			{{$nUserCards := ($data.users.Get $nUser).cards}}
 			{{if le (len $data.deck) 4}}{{$data.Set "deck" ($data.deck.AppendSlice (slice $data.disc.cards 1 | shuffle))}}{{$data.disc.Set "cards" (cslice (index $data.disc.cards 0))}}{{end}}
 			{{$nUserCards =$nUserCards.AppendSlice (slice $data.deck 0 4)}}{{($data.users.Get $nUser).Set "cards" $nUserCards}}{{$data.Set "deck" (slice $data.deck 4)}}
-			{{template "sendResponse" (sdict "T" .Interaction.Token "Emb" (cembed "description" (print "Added 4 cards to <@" $nUser ">'s hand.")))}}
+			{{template "sendResponse" (sdict "T" .Interaction.Token "Emb" (cembed "description" (print "Added 4 cards to <@" $nUser ">'s hand. \n\nSelect a new color. (above message)")))}}
 			{{template "disable" (sdict "msg" $msg "mID" $data.mID)}}
 		{{else if reFind `REVERSE` $card.name}}
 			{{if ne (index $data.turns 0) (str .User.ID)}}{{template "sendResponse" (sdict "T" .Interaction.Token "Con" "it's not your turn." "Eph" true)}}{{return}}{{end}}
