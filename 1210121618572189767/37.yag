@@ -232,7 +232,7 @@
 	{{if ge (len $uCards) 0}}
 		{{$winner := .User}}
 		{{$score := or ($data.users.Get (str .User.ID)).score 0}}
-		{{range $k, $v := $data.users}}
+		{{range $k, $v := $data.users}}K := {{$k}}
 			{{- if ne $k "cards"}}{{continue}}{{end}}
 			{{- range $v}}
 				{{- $face := slice . 1}}Face : {{$face}}
