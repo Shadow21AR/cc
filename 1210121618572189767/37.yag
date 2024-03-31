@@ -60,7 +60,7 @@
 		{{range seq 1 $data.setup.deckSize}}{{$deck = $deck.AppendSlice $deck}}{{end}}
 		{{$deck = shuffle $deck}}
 		{{range $k, $v := $data.users}}
-			{{$v.Set "cards" (slice $deck 0 2)}}
+			{{$v.Set "cards" (slice $deck 0 7)}}
 			{{$deck = slice $deck 7}}
 		{{end}}
 		{{$turns := cslice}}{{range $k, $v := $data.users}}{{$turns = $turns.Append $k}}{{end}}
@@ -246,7 +246,7 @@
 			{{- end}}
 			{{.Set "cards" cslice}}
 		{{end}}
-		{{($data.users.Get (str .User.ID)).Set "score" $score}}
+		{{($data.users.Get (str .User.ID)).Set "score" $score}}Score : {{$score}}
 		{{range $k, $v := $data.users}}{{/*Too lazy to test, works in my mind xD*/}}
 			{{- if ge $v.score 500}}
 				{{sendMessageRetID nil (print "<@" $k "> WON!")}}
