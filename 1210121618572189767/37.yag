@@ -1,4 +1,3 @@
-{{sendMessage nil (complexMessage "file" (json . true))}}
 {{$data := (dbGet .Channel.ID "uno").Value}}
 {{$embed := index .Message.Embeds 0 | structToSdict}}
 {{$hex := sdict "R" 0xFF0000 "G" 0x00FF00 "B" 0x0000FF "Y" 0xFFFF00}}
@@ -41,7 +40,7 @@
 		{{$_ := execTemplate "sendResponse" (sdict "T" .Interaction.Token "Con" (print "You can't edit the game, only <@" $data.owner "> can start it.") "Eph" true)}}
 	{{else}}
 		{{ sendModal ( cmodal 
-			"title" "UNO Setup" "custom_id" (print "uno_setup_" .User.ID) "fields" (cslice (sdict "label" "Number of Decks" "placeholder" "How many decks to use?") (sdict "label" "Minimum cards required to call UNO" "value" "Number of cards")))}}
+			"title" "UNO Setup" "custom_id" (print "uno_setup_" .User.ID) "fields" (cslice (sdict "label" "Number of Decks" "placeholder" "How many decks to use? (number only)") (sdict "label" "Minimum cards required to call UNO" "placeholder" "Number of cards (number only)")))}}
 	{{end}}
 {{else if eq .StrippedID "start"}}
 	{{if ne $data.owner .User.ID}}
