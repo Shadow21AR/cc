@@ -4,15 +4,15 @@
 {{if not $data}}{{return}}{{end}}
 {{if eq .StrippedID "join"}}
 	{{if $data.users.HasKey (str .User.ID)}}
-		{{$_ := execTemplate "sendResponse" (sdict "T" .Interaction.Token "Con" "You are already in the game" "Eph" true)}}
+		{{template "sendResponse" (sdict "T" .Interaction.Token "Con" "You are already in the game" "Eph" true)}}
 	{{else if eq (len $data.users) 10}}
-		{{$_ := execTemplate "sendResponse" (sdict "T" .Interaction.Token "Con" "only 10 player can join the game" "Eph" true)}}
+		{{template "sendResponse" (sdict "T" .Interaction.Token "Con" "only 10 player can join the game" "Eph" true)}}
 	{{else}}
 		{{$data.users.Set (str .User.ID) (sdict "cards" cslice)}}
 		{{$m := ""}}{{range $k, $v := $data.users}}{{$m = printf "%s<@%s>\n" $m $k}}{{end}}
 		{{$embed.Set "fields" (cslice (sdict "name" "Player(s) joined" "value" (or $m "NIL")))}}
 		{{editMessage nil .Message.ID (complexMessageEdit "embed" $embed)}}
-		{{$_ := execTemplate "sendResponse" (sdict "T" .Interaction.Token "Con" "You have joined the game" "Eph" true)}}
+		{{template "sendResponse" (sdict "T" .Interaction.Token "Con" "You have joined the game" "Eph" true)}}
 	{{end}}
 {{else if eq .StrippedID "leave"}}
 	{{if $data.users.HasKey (str .User.ID)}}
