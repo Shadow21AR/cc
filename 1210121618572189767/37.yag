@@ -287,7 +287,7 @@
 {{define "playCall"}}
 	{{$opts := cslice}}
 	{{range $k, $v := .data.users}}
-	{{if eq . $.User.ID}}{{continue}}{{end}}
+		{{if eq . (str $.User.ID)}}{{continue}}{{end}}
 		{{$mem := getMember $k}}{{$opts = $opts.Append (sdict "label" (or $mem.Nick $mem.User.Username) "value" $k)}}
 	{{end}}
 	{{$menu := cmenu "custom_id" (print "uno_pick_" .User.ID "_call") "type" "text" "placeholder" "pick a user" "options" $opts}}
