@@ -70,8 +70,8 @@
 		{{$discCard := sdict "in" (index $deck 0)}}{{$_ := execTemplate "getCard" $discCard}}
 		{{$myCol := ""}}{{if eq $discCard.col "A"}}{{$myCol = (index (shuffle (cslice "R" "G" "B" "Y")) 0)}}{{end}}
 		{{$data.Set "disc" (sdict "cards" (cslice (index $deck 0)) "col" (or $myCol $discCard.col ))}}
-		{{$mID := execTemplate "genResponse" (sdict "token" .Interaction.Token "data" $data "RID" true)}}
-		{{$data.Set "mID" $mID}}
+		{{$out := sdict "token" .Interaction.Token "data" $data "RID" true}}{{template "genResponse" $out}}
+		{{$data.Set "mID" $out.mID}}
 	{{end}}
 {{else if eq .StrippedID "play"}}
 	{{if ne (index $data.turns 0) (str .User.ID)}}
