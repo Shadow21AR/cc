@@ -278,7 +278,7 @@
 		{{$mem := getMember $k}}{{$opts = $opts.Append (sdict "label" (or $mem.Nick $mem.User.Username) "value" $k)}}
 	{{end}}
 	{{$menu := cmenu "custom_id" (print "uno_pick_" .User.ID "_call") "type" "text" "placeholder" "pick a user" "options" $opts}}
-	{{$_ := execTemplate "sendResponse" (sdict "T" .T "Emb" (cembed "color" ($hex.Get $data.disc.col) "description" "Choose a user!") "Com" $menu "Eph" true)}}
+	{{$_ := execTemplate "sendResponse" (sdict "T" .T "Emb" (cembed "color" 0xae27ff "description" "Choose a user!") "Com" $menu "Eph" true)}}
 {{end}}
 
 {{define "CMenu"}}
