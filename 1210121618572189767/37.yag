@@ -211,7 +211,7 @@
 				{{template "sendResponse" (sdict "T" .Interaction.Token "Con" (printf "<@%s> has less than %d card and didn't declared UNO.\n<@%[1]s> gets the penalty of 2 Cards." $target $data.setup.minCard))}}
 			{{else}}
 				{{template "sendResponse" (sdict "T" .Interaction.Token "Con" (printf "<@%s> has more than %d card or have declared UNO.\n%s gets the penalty of 2 Cards." $target $data.setup.minCard .User.Mention))}}
-				{{$target := .User.ID | str}}
+				{{$target = .User.ID | str}}
 			{{end}}
 			{{if le (len $data.deck) 2}}{{$data.Set "deck" ($data.deck.AppendSlice (slice $data.disc.cards 1 | shuffle))}}{{$data.disc.Set "cards" (cslice (index $data.disc.cards 0))}}{{end}}
 			{{$tCards := ($data.users.Get $target).cards}}
