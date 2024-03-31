@@ -40,7 +40,7 @@
 		{{$_ := execTemplate "sendResponse" (sdict "T" .Interaction.Token "Con" (print "You can't edit the game, only <@" $data.owner "> can start it.") "Eph" true)}}
 	{{else}}
 		{{ sendModal ( cmodal 
-			"title" "UNO Setup" "custom_id" (print "uno_setup_" .User.ID) "fields" (cslice (sdict "label" "Number of Decks (numbers only)" "placeholder" "How many decks to use?") (sdict "label" "Minimum cards required to call UNO (numbers only)" "placeholder" "Number of cards")))}}
+			"title" "UNO Setup" "custom_id" (print "uno_setup_" .User.ID) "fields" (cslice (sdict "label" "Number of Decks (numbers only)" "placeholder" "How many decks to use?") (sdict "label" "Minimum cards to call UNO (numbers only)" "placeholder" "Number of cards")))}}
 	{{end}}
 {{else if eq .StrippedID "start"}}
 	{{if ne $data.owner .User.ID}}
