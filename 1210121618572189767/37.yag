@@ -102,13 +102,17 @@
 {{else if eq .StrippedID "forfeit"}}
 	{{if $data.users.HasKey (str .User.ID)}}
 		{{$data.users.Del (str .User.ID)}}
-		{{$desc := (print .User.Mention " left the game.\n")}}
+		{{$turns := $data.turns}}
+		{{template "sendResponse" (sdict "T" .Interaction.Token "Con" (print .User.Mention " left the game."))}}
 		{{if le (len $data.users) 1}}
+			{{$desc := ""}}
 			{{range $k, $v := $data.users}}{{$desc = printf "%s<@%s> won the game." $desc $k}}{{end}}
 			{{template "sendResponse" (sdict "T" .Interaction.Token "Con" $desc)}}
 			{{template "disable" (sdict "msg" .Message "mID" .Message.ID)}}
 			{{dbDel .Channel.ID "uno"}}{{return}}
 		{{end}}
+		{{range $turns}}{{if ne . $.User.ID}}{{$turns = $turns.Append .}}{{end}}
+		{{$data.Set "turns" $turns}}
 	{{else}}
 		{{template "sendResponse" (sdict "T" .Interaction.Token "Con" "you aren't in the game." "Eph" true)}}
 	{{end}}
@@ -156,7 +160,9 @@
 			{{$opts := cslice}}{{range (cslice "🔴" "🟢" "🔵" "🟡")}}{{$opts = $opts.Append (sdict "label" . "value" .)}}{{end}}
 			{{updateMessage (complexMessageEdit "embed" (cembed "description" (print .User.Mention " | Select the new color")) "components" (cmenu "custom_id" (print "uno_pick_" .User.ID "_col") "type" "text" "placeholder" "pick a card" "options" $opts))}}
 			{{$nUser := index $data.turns 1}}
-			{{$data.Set "turns" ((slice $data.turns 2).Append (slice $data.turns 0 2))}}
+			{{if gt (len ($data.turns)) 2}}
+				{{$data.Set "turns" ((slice $data.turns 2).Append (slice $data.turns 0 2))}}
+			{{end}}
 			{{$nUserCards := ($data.users.Get $nUser).cards}}
 			{{if le (len $data.deck) 4}}{{$data.Set "deck" ($data.deck.AppendSlice (slice $data.disc.cards 1 | shuffle))}}{{$data.disc.Set "cards" (cslice (index $data.disc.cards 0))}}{{end}}
 			{{$nUserCards =$nUserCards.AppendSlice (slice $data.deck 0 4)}}{{($data.users.Get $nUser).Set "cards" $nUserCards}}{{$data.Set "deck" (slice $data.deck 4)}}
@@ -169,7 +175,9 @@
 		{{else if reFind `SKIP` $card.name}}
 			{{if ne (index $data.turns 0) (str .User.ID)}}{{template "sendResponse" (sdict "T" .Interaction.Token "Con" "it's not your turn." "Eph" true)}}{{return}}{{end}}
 			{{template "sendResponse" (sdict "T" .Interaction.Token "Con" (printf "<@%d> is skipping the <@%s>'s turn!" .User.ID (index $data.turns 1)))}}
-			{{$data.Set "turns" ((slice $data.turns 2).Append (slice $data.turns 0 2))}}
+			{{if gt (len ($data.turns)) 2}}
+				{{$data.Set "turns" ((slice $data.turns 2).Append (slice $data.turns 0 2))}}
+			{{end}}
 			{{template "genResponse" (sdict "token" .Interaction.Token "data" $data)}}
 		{{else if reFind `PLUS2` $card.name}}
 			{{if ne (index $data.turns 0) (str .User.ID)}}{{template "sendResponse" (sdict "T" .Interaction.Token "Con" "it's not your turn." "Eph" true)}}{{return}}{{end}}
@@ -177,7 +185,9 @@
 			{{if le (len $data.deck) 2}}{{$data.Set "deck" ($data.deck.AppendSlice (slice $data.disc.cards 1 | shuffle))}}{{$data.disc.Set "cards" (cslice (index $data.disc.cards 0))}}{{end}}
 			{{$nUserCards = $nUserCards.AppendSlice (slice $data.deck 0 2)}}{{($data.users.Get $nUser).Set "cards" $nUserCards}}{{$data.Set "deck" (slice $data.deck 2)}}
 			{{template "sendResponse" (sdict "T" .Interaction.Token "Con" (printf "<@%d> played Draw 2 card, <@%s> drew 2 cards and skipped their turn.\n" .User.ID (index $data.turns 1)))}}
-			{{$data.Set "turns" ((slice $data.turns 2).Append (slice $data.turns 0 2))}}
+			{{if gt (len ($data.turns)) 2}}
+				{{$data.Set "turns" ((slice $data.turns 2).Append (slice $data.turns 0 2))}}
+			{{end}}
 			{{template "genResponse" (sdict "token" .Interaction.Token "data" $data)}}
 		{{else}}
 			{{ $data.Set "turns" ((slice $data.turns 1).Append (index $data.turns 0)) }}
