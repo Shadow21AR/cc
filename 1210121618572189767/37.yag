@@ -155,6 +155,7 @@
 			{{if ne (index $data.turns 0) (str .User.ID)}}{{template "sendResponse" (sdict "T" .Interaction.Token "Con" "it's not your turn." "Eph" true)}}{{return}}{{end}}
 			{{$opts := cslice}}{{range (cslice "🔴" "🟢" "🔵" "🟡")}}{{$opts = $opts.Append (sdict "label" . "value" .)}}{{end}}
 			{{updateMessage (complexMessageEdit "embed" (cembed "description" (print .User.Mention " | Select the new color")) "components" (cmenu "custom_id" (print "uno_pick_" .User.ID "_col") "type" "text" "placeholder" "pick a card" "options" $opts))}}
+			{{template "disable" (sdict "msg" .Message "mID" .Message.ID)}}
 		{{else if eq "WILD4" $card.name}}
 			{{if ne (index $data.turns 0) (str .User.ID)}}{{template "sendResponse" (sdict "T" .Interaction.Token "Con" "it's not your turn." "Eph" true)}}{{return}}{{end}}
 			{{$opts := cslice}}{{range (cslice "🔴" "🟢" "🔵" "🟡")}}{{$opts = $opts.Append (sdict "label" . "value" .)}}{{end}}
@@ -168,10 +169,12 @@
 			{{$nUserCards =$nUserCards.AppendSlice (slice $data.deck 0 4)}}{{($data.users.Get $nUser).Set "cards" $nUserCards}}{{$data.Set "deck" (slice $data.deck 4)}}
 			{{template "sendResponse" (sdict "T" .Interaction.Token "Emb" (cembed "description" (print "Added 4 cards to <@" $nUser ">'s hand.")))}}
 			{{template "genResponse" (sdict "token" .Interaction.Token "data" $data)}}
+			{{template "disable" (sdict "msg" .Message "mID" .Message.ID)}}
 		{{else if reFind `REVERSE` $card.name}}
 			{{if ne (index $data.turns 0) (str .User.ID)}}{{template "sendResponse" (sdict "T" .Interaction.Token "Con" "it's not your turn." "Eph" true)}}{{return}}{{end}}
 			{{$newTurn := cslice}}{{range $data.turns}}{{- $newTurn = (cslice .).AppendSlice $newTurn}}{{end}}{{$data.Set "turns" $newTurn}}
 			{{template "sendResponse" (sdict "T" .Interaction.Token "Con" "The direction of play has been reversed!")}}
+			{{template "disable" (sdict "msg" .Message "mID" .Message.ID)}}
 			{{template "genResponse" (sdict "token" .Interaction.Token "data" $data)}}
 		{{else if reFind `SKIP` $card.name}}
 			{{if ne (index $data.turns 0) (str .User.ID)}}{{template "sendResponse" (sdict "T" .Interaction.Token "Con" "it's not your turn." "Eph" true)}}{{return}}{{end}}
@@ -179,6 +182,7 @@
 			{{if gt (len ($data.turns)) 2}}
 				{{$data.Set "turns" ((slice $data.turns 2).Append (slice $data.turns 0 2))}}
 			{{end}}
+			{{template "disable" (sdict "msg" .Message "mID" .Message.ID)}}
 			{{template "genResponse" (sdict "token" .Interaction.Token "data" $data)}}
 		{{else if reFind `PLUS2` $card.name}}
 			{{if ne (index $data.turns 0) (str .User.ID)}}{{template "sendResponse" (sdict "T" .Interaction.Token "Con" "it's not your turn." "Eph" true)}}{{return}}{{end}}
@@ -189,10 +193,12 @@
 			{{if gt (len ($data.turns)) 2}}
 				{{$data.Set "turns" ((slice $data.turns 2).Append (slice $data.turns 0 2))}}
 			{{end}}
+			{{template "disable" (sdict "msg" .Message "mID" .Message.ID)}}
 			{{template "genResponse" (sdict "token" .Interaction.Token "data" $data)}}
 		{{else}}
 			{{ $data.Set "turns" ((slice $data.turns 1).Append (index $data.turns 0)) }}
 			{{template "genResponse" (sdict "token" .Interaction.Token "data" $data)}}
+			{{template "disable" (sdict "msg" .Message "mID" .Message.ID)}}
 		{{end}}
 	{{else if eq (index $args 2) "col"}}
 		{{$data.disc.Set "col" ((sdict "🔴" "R" "🟢" "G" "🔵" "B" "🟡" "Y").Get (index .Values 0))}}
@@ -214,7 +220,6 @@
 			{{template "sendResponse" (sdict "T" .Interaction.Token "Con" "Something went wrong :/")}}
 		{{end}}
 	{{end}}
-	{{template "disable" (sdict "msg" .Message "mID" .Message.ID)}}
 	{{$uCards := ($data.users.Get (str .User.ID)).cards}}
 	{{if le (len $uCards) 0}}
 		{{$winner := .User}}
