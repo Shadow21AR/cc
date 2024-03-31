@@ -194,7 +194,7 @@
 			{{$nUser := index $data.turns 1}}{{$nUserCards := ($data.users.Get $nUser).cards}}
 			{{if le (len $data.deck) 2}}{{$data.Set "deck" ($data.deck.AppendSlice (slice $data.disc.cards 1 | shuffle))}}{{$data.disc.Set "cards" (cslice (index $data.disc.cards 0))}}{{end}}
 			{{$nUserCards = $nUserCards.AppendSlice (slice $data.deck 0 2)}}{{($data.users.Get $nUser).Set "cards" $nUserCards}}{{$data.Set "deck" (slice $data.deck 2)}}
-			{{template "sendResponse" (sdict "T" .Interaction.Token "Con" (printf "<@%d> played Draw 2 card, <@%s> drew 2 cards and skipped their turn.\n" .User.ID (index $data.turns 1)))}}
+			{{template "sendResponse" (sdict "T" .Interaction.Token "Con" (printf "<@%d> played used `Draw +2` card, <@%s> draw 2 cards and skipped their turn.\n" .User.ID (index $data.turns 1)))}}
 			{{if gt (len ($data.turns)) 2}}
 				{{$data.Set "turns" ((slice $data.turns 2).Append (slice $data.turns 0 2))}}
 			{{end}}
@@ -234,7 +234,7 @@
 		{{$score := or ($data.users.Get (str .User.ID)).score 0}}
 		{{range $data.users}}
 			{{- range .cards}}
-				{{- $face := slice . 1}}Face : {{$face}}
+				{{- $face := slice . 1}}
 				{{- if eq $face "0" "1" "2" "3" "4" "5" "6" "7" "8" "9"}}
 					{{- $score = add 3 $score}}
 				{{- else if eq $face "REVERSE" "SKIP" "PLUS2"}}
@@ -245,13 +245,15 @@
 			{{- end}}
 			{{.Set "cards" cslice}}
 		{{end}}
-		{{($data.users.Get (str .User.ID)).Set "score" $score}}Score : {{$score}}
-		{{range $k, $v := $data.users}}{{/*Too lazy to test, works in my mind xD*/}}
-			{{- if ge $v.score 500}}
+		{{($data.users.Get (str .User.ID)).Set "score" $score}}
+		{{range $data.users}}
+			{{- if ge .score 500}}
 				{{sendMessageRetID nil (print "<@" $k "> WON!")}}
-				{{return}}
+				{{dbDel .Channel.ID "uno"}}{{return}}
 			{{- end}}
 		{{end}}
+		{{template "sendResponse" (sdict "T" .Interaction.Token "Con" (printf "<@%s> won this round and earned `%d` points.\nStarting new round. . ." .User.ID $score))}}
+		{{sleep 1}}
 		{{$deck := cslice}}{{/*Should restart the game ig*/}}
 		{{range $s := (cslice "0" "1" "2" "3" "4" "5" "6" "7" "8" "9" "REVERSE" "SKIP" "PLUS2")}}
 			{{- range $c := (cslice "R" "G" "B" "Y")}}
