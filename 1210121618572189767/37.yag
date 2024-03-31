@@ -257,7 +257,7 @@
 {{define "sendResponse"}}
 	{{$out := sdict}}
 	{{if .Con}}{{$out.Set "content" .Con}}{{end}}{{if .Emb}}{{$out.Set "embed" .Emb}}{{end}}{{if .Com}}{{$out.Set "components" .Com}}{{end}}{{if .Eph}}{{$out.Set "ephemeral" true}}{{end}}
-	{{if .RID}}{{sendResponseRetID .T (complexMessage $out)}}{{else}}{{sendResponse .T (complexMessage $out)}}{{end}}
+	{{if .RID}}{{$out.Set "mID" (sendResponseRetID .T (complexMessage $out))}}{{else}}{{sendResponse .T (complexMessage $out)}}{{end}}
 {{end}}
 
 {{define "genResponse"}}
