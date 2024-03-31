@@ -193,7 +193,7 @@
 			{{$nUser := index $data.turns 1}}{{$nUserCards := ($data.users.Get $nUser).cards}}
 			{{if le (len $data.deck) 2}}{{$data.Set "deck" ($data.deck.AppendSlice (slice $data.disc.cards 1 | shuffle))}}{{$data.disc.Set "cards" (cslice (index $data.disc.cards 0))}}{{end}}
 			{{$nUserCards = $nUserCards.AppendSlice (slice $data.deck 0 2)}}{{($data.users.Get $nUser).Set "cards" $nUserCards}}{{$data.Set "deck" (slice $data.deck 2)}}
-			{{template "sendResponse" (sdict "T" .Interaction.Token "Con" (printf "<@%d> played used `Draw +2` card, <@%s> draw 2 cards and skipped their turn.\n" .User.ID (index $data.turns 1)))}}
+			{{template "sendResponse" (sdict "T" .Interaction.Token "Con" (printf "<@%d> played `Draw +2` card, <@%s> draw 2 cards and skipped their turn.\n" .User.ID (index $data.turns 1)))}}
 			{{if gt (len ($data.turns)) 2}}
 				{{$data.Set "turns" ((slice $data.turns 2).Append (slice $data.turns 0 2))}}
 			{{end}}
