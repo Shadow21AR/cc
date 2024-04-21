@@ -115,8 +115,9 @@
 			{{template "disable" (sdict "msg" .Message "mID" .Message.ID)}}
 			{{dbDel .Channel.ID "uno"}}{{return}}
 		{{end}}
-		{{range $turns}}{{if ne . (str $.User.ID)}}{{$turns = $turns.Append .}}{{end}}{{end}}
-		{{$data.Set "turns" $turns}}
+		{{$newTurns := cslice}}
+		{{range $turns}}{{if ne . (str $.User.ID)}}{{$newTurns = $newTurns.Append .}}{{end}}{{end}}
+		{{$data.Set "turns" $newTurns}}
 	{{else}}
 		{{template "sendResponse" (sdict "T" .Interaction.Token "Con" "you aren't in the game." "Eph" true)}}
 	{{end}}
