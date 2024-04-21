@@ -186,7 +186,7 @@
 			{{if ne (index $data.turns 0) (str .User.ID)}}{{template "sendResponse" (sdict "T" .Interaction.Token "Con" "it's not your turn." "Eph" true)}}{{return}}{{end}}
 			{{template "sendResponse" (sdict "T" .Interaction.Token "Con" (printf "<@%d> is skipping the <@%s>'s turn!" .User.ID (index $data.turns 1)))}}
 			{{if gt (len ($data.turns)) 2}}
-				{{$data.Set "turns" ((slice $data.turns 2).Append (slice $data.turns 0 2))}}
+				{{$data.Set "turns" ((slice $data.turns 2).AppendSlice (slice $data.turns 0 2))}}
 			{{end}}
 			{{template "disable" (sdict "msg" $msg "mID" $data.mID)}}
 			{{template "genResponse" (sdict "token" .Interaction.Token "data" $data)}}
@@ -197,7 +197,7 @@
 			{{$nUserCards = $nUserCards.AppendSlice (slice $data.deck 0 2)}}{{($data.users.Get $nUser).Set "cards" $nUserCards}}{{$data.Set "deck" (slice $data.deck 2)}}
 			{{template "sendResponse" (sdict "T" .Interaction.Token "Con" (printf "<@%d> played `Draw +2` card, <@%s> draw 2 cards and skipped their turn.\n" .User.ID (index $data.turns 1)))}}
 			{{if gt (len ($data.turns)) 2}}
-				{{$data.Set "turns" ((slice $data.turns 2).Append (slice $data.turns 0 2))}}
+				{{$data.Set "turns" ((slice $data.turns 2).AppendSlice (slice $data.turns 0 2))}}
 			{{end}}
 			{{template "disable" (sdict "msg" $msg "mID" $data.mID)}}
 			{{template "genResponse" (sdict "token" .Interaction.Token "data" $data)}}

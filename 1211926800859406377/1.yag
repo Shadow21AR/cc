@@ -11,7 +11,7 @@
     {{sendMessage nil (printf "There's already an [instance](<https://discord.com/channels/%d/%d/%d>) of UNO running on this channel!" .Guild.ID .Channel.ID $data.mID)}}
     {{return}}
 {{end}}
-{{$mID := sendMessageRetID nil (complexMessage 
+{{$mID := sendMessageNoEscapeRetID nil (complexMessage 
     "content" (mentionRoleID $gameRole)
     "embed" (cembed
         "title" "UNO Game"
