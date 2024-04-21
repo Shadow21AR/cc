@@ -293,7 +293,8 @@
 	{{$menu := sdict "data" .data "user" (index .data.turns 0)}}{{template "CMenu" $menu}}{{$data := .data}}
 	{{$cards := (.data.users.Get $menu.user).cards}}
 	{{$uno := cslice}}{{if le (len $cards) 2}}{{$uno = $uno.Append (cbutton "label" "Uno" "custom_id" "uno_uno" "style" "Success")}}{{end}}
-	{{$data := (sdict "T" $token "RID" .RID "data" .data "Emb" (cembed "color" ($hex.Get $data.disc.col) "description" (printf "The current card is: \n# <:e:%s>\n\nIt's <@%s> turn." ($data.emojis.Get (index $data.disc.cards 0)) (index $data.turns 0))) "Com" ((cslice (cbutton "label" "Hand" "custom_id" "uno_hand" "style" "Success") (cbutton "label" "Play" "custom_id" "uno_play" "style" "Success" "disabled" (not $menu.pickup)) (cbutton "label" "Pickup" "custom_id" "uno_pickup" "style" "Success" "disabled" $menu.pickup) (cbutton "label" "Callout" "custom_id" "uno_callout" "style" "Danger") (cbutton "label" "Forfeit" "custom_id" "uno_forfeit" "style" "Danger") (cbutton "label" "Help" "custom_id" "uno_help" "style" "Primary")).AppendSlice $uno))}}{{template "sendResponse" $data}}
+	{{$data := (sdict "T" $token "RID" .RID "data" .data "Emb" (cembed "color" ($hex.Get $data.disc.col) "description" (printf "The current card is: \n# <:e:%s>\n\nIt's <@%s> turn." ($data.emojis.Get (index $data.disc.cards 0)) (index $data.turns 0))) "Com" ((cslice (cslice (cbutton "label" "Hand" "custom_id" "uno_hand" "style" "Success") (cbutton "label" "Play" "custom_id" "uno_play" "style" "Success" "disabled" (not $menu.pickup)) (cbutton "label" "Pickup" "custom_id" "uno_pickup" "style" "Success" "disabled" $menu.pickup)) (cslice (cbutton "label" "Callout" "custom_id" "uno_callout" "style" "Danger") (cbutton "label" "Forfeit" "custom_id" "uno_forfeit" "style" "Danger") (cbutton "label" "Help" "custom_id" "uno_help" "style" "Primary"))).AppendSlice $uno))}}
+	{{template "sendResponse" $data}}
 	{{$data.data.Set "mID" $data.data.mID}}
 {{end}}
 
