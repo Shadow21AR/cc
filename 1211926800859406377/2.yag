@@ -116,6 +116,10 @@
 			{{dbDel .Channel.ID "uno"}}{{return}}
 		{{end}}
 		{{$newTurns := cslice}}
+		{{if eq (str .User.ID) (index $turns 0)}}
+			{{$data.Set "turns" ((slice $data.turns 1).Append (index $data.turns 0))}}
+			{{template "genResponse" (sdict "token" .Interaction.Token "data" $data)}}
+		{{end}}
 		{{range $turns}}{{if ne . (str $.User.ID)}}{{$newTurns = $newTurns.Append .}}{{end}}{{end}}
 		{{$data.Set "turns" $newTurns}}
 	{{else}}
